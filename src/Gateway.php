@@ -3,8 +3,8 @@
 namespace Omnipay\IfthenPay;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\WorldPay\Message\CompletePurchaseRequest;
-use Omnipay\WorldPay\Message\PurchaseRequest;
+//use Omnipay\WorldPay\Message\CompletePurchaseRequest;
+//use Omnipay\WorldPay\Message\PurchaseRequest;
 
 /**
  * WorldPay Gateway
@@ -15,7 +15,7 @@ class Gateway extends AbstractGateway
 {
     public function getName()
     {
-        return 'WorldPay';
+        return 'IfthenPay';
     }
 
     public function getDefaultParameters()
