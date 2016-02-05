@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\WorldPay;
+namespace Omnipay\IfthenPay;
 
 use Omnipay\Common\AbstractGateway;
 use Omnipay\WorldPay\Message\CompletePurchaseRequest;
