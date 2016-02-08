@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\WorldPay\Message;
+namespace Omnipay\IfthenPay\Message;
 
 use Omnipay\Common\Message\AbstractRequest;
 
