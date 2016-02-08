@@ -1,10 +1,8 @@
 <?php
 
-namespace Omnipay\IfthenPay;
+namespace Omnipay\Ifthenpay;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\IfthenPay\Message\CompletePurchaseRequest;
-use Omnipay\IfthenPay\Message\PurchaseRequest;
 
 /**
  * IfthenPay
@@ -13,9 +11,10 @@ use Omnipay\IfthenPay\Message\PurchaseRequest;
  */
 class Gateway extends AbstractGateway
 {
+    
     public function getName()
     {
-        return 'Ifthenpay';
+        return "IfthenPay";
     }
 
     public function getDefaultParameters()
@@ -23,8 +22,8 @@ class Gateway extends AbstractGateway
         return array(
             'Entidade' => '',
             'Subentidade' => '',
-            'Chave Anti-Pishing' => '',
-            'Endereço de Callback' => ''
+            'ChaveAntiPhishing' => '',
+            'EnderecoCallback' => ''
         );
     }
 
@@ -48,33 +47,29 @@ class Gateway extends AbstractGateway
         return $this->setParameter('Subentidade', $value);
     }
 
-    public function getChaveAntiPishing()
+    public function getChaveAntiPhishing()
     {
-        return $this->getParameter('Chave Anti-Pishing');
+        return $this->getParameter('ChaveAntiPhishing');
     }
 
-    public function setChaveAntiPishing($value)
+    public function setChaveAntiPhishing($value)
     {
-        return $this->setParameter('Chave Anti-Pishing', $value);
+        return $this->setParameter('ChaveAntiPhishing', $value);
     }
 
     public function getEnderecoCallback()
     {
-        return $this->getParameter('Endereço de Callback');
+        return $this->getParameter('EnderecoCallback');
     }
 
     public function setEnderecoCallback($value)
     {
-        return $this->setParameter('Endereço de Callback', $value);
+        return $this->setParameter('EnderecoCallback', $value);
     }
 
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\WorldPay\Message\PurchaseRequest', $parameters);
+        return $this->createRequest('\Omnipay\Ifthenpay\Message\PurchaseRequest', $parameters);
     }
-
-    public function completePurchase(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\WorldPay\Message\CompletePurchaseRequest', $parameters);
-    }
+    
 }

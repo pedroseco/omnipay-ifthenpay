@@ -1,106 +1,189 @@
 <?php
 
-namespace Omnipay\IfthenPay\Message;
+namespace Omnipay\Ifthenpay\Message;
 
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\IfthenPay\Message\PurchaseResponse;
 
-/**
- * WorldPay Purchase Request
- */
 class PurchaseRequest extends AbstractRequest
 {
-    protected $liveEndpoint = 'https://secure.worldpay.com/wcc/purchase';
-    protected $testEndpoint = 'https://secure-test.worldpay.com/wcc/purchase';
-
-    public function getInstallationId()
+    
+    public function getEntidade()
     {
-        return $this->getParameter('installationId');
+        return $this->getParameter('Entidade');
     }
 
-    public function setInstallationId($value)
+    public function setEntidade($value)
     {
-        return $this->setParameter('installationId', $value);
+        return $this->setParameter('Entidade', $value);
     }
 
-    public function getAccountId()
+    public function getSubentidade()
     {
-        return $this->getParameter('accountId');
+        return $this->getParameter('Subentidade');
     }
 
-    public function setAccountId($value)
+    public function setSubentidade($value)
     {
-        return $this->setParameter('accountId', $value);
+        return $this->setParameter('Subentidade', $value);
     }
 
-    public function getSecretWord()
+    public function getChaveAntiPhishing()
     {
-        return $this->getParameter('secretWord');
+        return $this->getParameter('ChaveAntiPhishing');
     }
 
-    public function setSecretWord($value)
+    public function setChaveAntiPhishing($value)
     {
-        return $this->setParameter('secretWord', $value);
+        return $this->setParameter('ChaveAntiPhishing', $value);
     }
 
-    public function getCallbackPassword()
+    public function getEnderecoCallback()
     {
-        return $this->getParameter('callbackPassword');
+        return $this->getParameter('EnderecoCallback');
     }
 
-    public function setCallbackPassword($value)
+    public function setEnderecoCallback($value)
     {
-        return $this->setParameter('callbackPassword', $value);
+        return $this->setParameter('EnderecoCallback', $value);
     }
 
     public function getData()
     {
-        $this->validate('amount');
-
-        // Either the nodifyUrl or the returnUrl can be provided.
-        // The returnUrl is deprecated, as strictly this is a notifyUrl.
-        if (!$this->getNotifyUrl()) {
-            $this->validate('returnUrl');
-        }
-
-        $data = array();
-        $data['instId'] = $this->getInstallationId();
-        $data['accId1'] = $this->getAccountId();
-        $data['cartId'] = $this->getTransactionId();
-        $data['desc'] = $this->getDescription();
-        $data['amount'] = $this->getAmount();
-        $data['currency'] = $this->getCurrency();
-        $data['testMode'] = $this->getTestMode() ? 100 : 0;
-        $data['MC_callback'] = $this->getNotifyUrl() ?: $this->getReturnUrl();
-
-        if ($this->getCard()) {
-            $data['name'] = $this->getCard()->getName();
-            $data['address1'] = $this->getCard()->getAddress1();
-            $data['address2'] = $this->getCard()->getAddress2();
-            $data['town'] = $this->getCard()->getCity();
-            $data['region'] = $this->getCard()->getState();
-            $data['postcode'] = $this->getCard()->getPostcode();
-            $data['country'] = $this->getCard()->getCountry();
-            $data['tel'] = $this->getCard()->getPhone();
-            $data['email'] = $this->getCard()->getEmail();
-        }
-
-        if ($this->getSecretWord()) {
-            $data['signatureFields'] = 'instId:amount:currency:cartId';
-            $signature_data = array($this->getSecretWord(),
-                $data['instId'], $data['amount'], $data['currency'], $data['cartId']);
-            $data['signature'] = md5(implode(':', $signature_data));
-        }
-
-        return $data;
+        return $this->getParameters();
     }
 
     public function sendData($data)
     {
-        return $this->response = new PurchaseResponse($this, $data);
+        $ID = $this->getParameters()["transactionId"];
+        $entidade = $this->getParameters()["Entidade"];
+        $subEntidade = $this->getParameters()["Subentidade"];
+        $valor = $this->getParameters()["amount"];
+        $result = $this->getMBRef($entidade, $subEntidade, $ID, $valor);
+        return $this->response = new Response($this, $result);
     }
 
-    public function getEndpoint()
+    public function getMBRef($entidade, $subentidade, $ID, $valor)
     {
-        return $this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint;
+        $referencia = $this->GenerateMbRef($entidade, $subentidade, $ID, $valor);
+        
+        if(strlen($referencia) == 11)
+        {
+            return json_encode(array("entidade" => $entidade,"transactionReference" => $referencia, "valor" => $valor));
+        }
+        else
+        {
+            return json_encode(array("erro" => $referencia));
+        }
+        
     }
+    
+    private function format_number($number) 
+	{ 
+		$verifySepDecimal = number_format(99,2);
+	
+		$valorTmp = $number;
+	
+		$sepDecimal = substr($verifySepDecimal, 2, 1);
+	
+		$hasSepDecimal = True;
+	
+		$i=(strlen($valorTmp)-1);
+	
+		for($i;$i!=0;$i-=1)
+		{
+			if(substr($valorTmp,$i,1)=="." || substr($valorTmp,$i,1)==","){
+				$hasSepDecimal = True;
+				$valorTmp = trim(substr($valorTmp,0,$i))."@".trim(substr($valorTmp,1+$i));
+				break;
+			}
+		}
+	
+		if($hasSepDecimal!=True){
+			$valorTmp=number_format($valorTmp,2);
+		
+			$i=(strlen($valorTmp)-1);
+		
+			for($i;$i!=1;$i--)
+			{
+				if(substr($valorTmp,$i,1)=="." || substr($valorTmp,$i,1)==","){
+					$hasSepDecimal = True;
+					$valorTmp = trim(substr($valorTmp,0,$i))."@".trim(substr($valorTmp,1+$i));
+					break;
+				}
+			}
+		}
+	
+		for($i=1;$i!=(strlen($valorTmp)-1);$i++)
+		{
+			if(substr($valorTmp,$i,1)=="." || substr($valorTmp,$i,1)=="," || substr($valorTmp,$i,1)==" "){
+				$valorTmp = trim(substr($valorTmp,0,$i)).trim(substr($valorTmp,1+$i));
+				break;
+			}
+		}
+	
+		if (strlen(strstr($valorTmp,'@'))>0){
+			$valorTmp = trim(substr($valorTmp,0,strpos($valorTmp,'@'))).trim($sepDecimal).trim(substr($valorTmp,strpos($valorTmp,'@')+1));
+		}
+		
+		return $valorTmp; 
+	}
+    
+    private function GenerateMbRef($ent_id, $subent_id, $order_id, $order_value)
+	{
+		$chk_val = 0;
+		
+		$order_id ="0000".$order_id;
+		
+		if(strlen($ent_id)<5)
+		{
+			return "Lamentamos mas tem de indicar uma entidade válida";
+		}else if(strlen($ent_id)>5){
+			return "Lamentamos mas tem de indicar uma entidade válida";
+		}if(strlen($subent_id)==0){
+			return "Lamentamos mas tem de indicar uma subentidade válida";
+		}
+		
+		$order_value= sprintf("%01.2f", $order_value);
+		
+		$order_value = $this->format_number($order_value);
+
+		if ($order_value < 1){
+			return "Lamentamos mas é impossível gerar uma referência MB para valores inferiores a 1 Euro";
+		}
+		if ($order_value >= 1000000){
+			echo "<b>AVISO:</b> Pagamento fraccionado por exceder o valor limite para pagamentos no sistema Multibanco<br>";
+		}
+		
+		if(strlen($subent_id)==1){
+			//Apenas sao considerados os 6 caracteres mais a direita do order_id
+			$order_id = substr($order_id, (strlen($order_id) - 6), strlen($order_id));
+			$chk_str = sprintf('%05u%01u%06u%08u', $ent_id, $subent_id, $order_id, round($order_value*100));
+		}else if(strlen($subent_id)==2){
+			//Apenas sao considerados os 5 caracteres mais a direita do order_id
+			$order_id = substr($order_id, (strlen($order_id) - 5), strlen($order_id));
+			$chk_str = sprintf('%05u%02u%05u%08u', $ent_id, $subent_id, $order_id, round($order_value*100));
+		}else {
+			//Apenas sao considerados os 4 caracteres mais a direita do order_id
+			$order_id = substr($order_id, (strlen($order_id) - 4), strlen($order_id));
+			$chk_str = sprintf('%05u%03u%04u%08u', $ent_id, $subent_id, $order_id, round($order_value*100));
+		}
+			
+		//cálculo dos check digits
+
+		$chk_array = array(3, 30, 9, 90, 27, 76, 81, 34, 49, 5, 50, 15, 53, 45, 62, 38, 89, 17, 73, 51);
+		
+		for ($i = 0; $i < 20; $i++)
+		{
+			$chk_int = substr($chk_str, 19-$i, 1);
+			$chk_val += ($chk_int%10)*$chk_array[$i];
+		}
+		
+		$chk_val %= 97;
+		
+		$chk_digits = sprintf('%02u', 98-$chk_val);
+        
+        return substr($chk_str, 5, 3)." ".substr($chk_str, 8, 3)." ".substr($chk_str, 11, 1).$chk_digits;
+	}
+    
 }
