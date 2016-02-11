@@ -3,7 +3,6 @@
 namespace Omnipay\Ifthenpay\Message;
 
 use Omnipay\Common\Message\AbstractRequest;
-use Omnipay\IfthenPay\Message\PurchaseResponse;
 
 class PurchaseRequest extends AbstractRequest
 {
@@ -37,15 +36,15 @@ class PurchaseRequest extends AbstractRequest
     {
         return $this->setParameter('ChaveAntiPhishing', $value);
     }
-
-    public function getEnderecoCallback()
+    
+    public function getChaveAntiPhishingCallback()
     {
-        return $this->getParameter('EnderecoCallback');
+        return $this->getParameter('ChaveAntiPhishingCallback');
     }
 
-    public function setEnderecoCallback($value)
+    public function setChaveAntiPhishingCallback($value)
     {
-        return $this->setParameter('EnderecoCallback', $value);
+        return $this->setParameter('ChaveAntiPhishingCallback', $value);
     }
 
     public function getData()

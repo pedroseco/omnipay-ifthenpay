@@ -23,7 +23,7 @@ class Gateway extends AbstractGateway
             'Entidade' => '',
             'Subentidade' => '',
             'ChaveAntiPhishing' => '',
-            'EnderecoCallback' => ''
+            'ChaveAntiPhishingCallback' => ''
         );
     }
 
@@ -57,19 +57,24 @@ class Gateway extends AbstractGateway
         return $this->setParameter('ChaveAntiPhishing', $value);
     }
 
-    public function getEnderecoCallback()
+    public function getChaveAntiPhishingCallback()
     {
-        return $this->getParameter('EnderecoCallback');
+        return $this->getParameter('ChaveAntiPhishingCallback');
     }
 
-    public function setEnderecoCallback($value)
+    public function setChaveAntiPhishingCallback($value)
     {
-        return $this->setParameter('EnderecoCallback', $value);
+        return $this->setParameter('ChaveAntiPhishingCallback', $value);
     }
 
     public function purchase(array $parameters = array())
     {
         return $this->createRequest('\Omnipay\Ifthenpay\Message\PurchaseRequest', $parameters);
+    }
+    
+    public function completePurchase(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ifthenpay\Message\CompletePurchaseRequest', $parameters);
     }
     
 }
