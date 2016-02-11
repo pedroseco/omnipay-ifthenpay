@@ -1,10 +1,5 @@
 Ifthenpay gateway for Omnipay
 ==============
-
-[![Total Downloads](https://img.shields.io/packagist/dt/ignited/laravel-omnipay.svg)](https://packagist.org/packages/ignited/laravel-omnipay)
-[![Latest Version](http://img.shields.io/packagist/v/ignited/laravel-omnipay.svg)](https://github.com/ignited/laravel-omnipay/releases)
-[![Dependency Status](https://www.versioneye.com/php/ignited:laravel-omnipay/badge.svg)](https://www.versioneye.com/php/ignited:laravel-omnipay)
-
 **This is the Ifthenpay gateway for omnipay payment processing library**
 
 Ifthenpay is one Portuguese payment method that allows the customer to pay by bank reference.
