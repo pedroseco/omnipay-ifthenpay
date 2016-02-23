@@ -1,5 +1,7 @@
 Ifthenpay gateway for Omnipay
 ==============
+![Multibanco](https://raw.githubusercontent.com/ifthenpay/omnipay-ifthenpay/master/mb.png)
+
 **This is the Ifthenpay gateway for omnipay payment processing library**
 
 [![Build Status](https://travis-ci.org/ifthenpay/omnipay-ifthenpay.svg?branch=master)](https://travis-ci.org/ifthenpay/omnipay-ifthenpay)
