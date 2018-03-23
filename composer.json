@@ -1,5 +1,5 @@
 {
-    "name": "ifthenpay/omnipay-ifthenpay",
+    "name": "pedroseco/omnipay-ifthenpay",
     "description": "Ifthenpay driver for the Omnipay PHP payment processing library",
     "keywords": [
         "gateway",
